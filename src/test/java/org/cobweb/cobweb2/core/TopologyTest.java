@@ -1,8 +1,10 @@
 package org.cobweb.cobweb2.core;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotEquals;
 
 import org.cobweb.util.RandomNoGenerator;
+
+import junit.framework.TestCase;
 
 
 public class TopologyTest extends TestCase {
@@ -20,6 +22,14 @@ public class TopologyTest extends TestCase {
 	private static final Location l90 = new Location(9, 0);
 	private static final Location l98 = new Location(9, 8);
 	private static final Location l99 = new Location(9, 9);
+
+	private static final LocationDirection l99west = new LocationDirection(l99, Topology.WEST);
+	private static final LocationDirection l89west = new LocationDirection(l89, Topology.WEST);
+	private static final LocationDirection l99east = new LocationDirection(l99, Topology.EAST);
+	private static final LocationDirection l09east = new LocationDirection(l09, Topology.EAST);
+	private static final LocationDirection l99south = new LocationDirection(l99, Topology.SOUTH);
+	private static final LocationDirection l90south = new LocationDirection(l90, Topology.SOUTH);
+
 
 	// 00 10 __ __ __ 50 __ __ __ 90
 	// 01 11 __ __ __ __ __ __ __ __
@@ -44,6 +54,18 @@ public class TopologyTest extends TestCase {
 
 	private RandomSource randomSource = new TestRandomSource();
 
+	public void testGetAdjacent() {
+		Topology t = new Topology(randomSource, 10, 10, false);
+		assertEquals(l89west, t.getAdjacent(l99west));
+		assertNotEquals(l09east, t.getAdjacent(l99east));
+
+		t = new Topology(randomSource, 10, 10, true);
+		assertEquals(l09east, t.getAdjacent(l99east));
+		assertEquals(l90south, t.getAdjacent(l99south));
+		assertEquals(0, t.getAdjacent(l99south).y);
+
+
+	}
 	public void testDistanceSimple() {
 		Topology t = new Topology(randomSource, 10, 10, false);
 
